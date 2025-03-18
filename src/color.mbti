@@ -1,0 +1,64 @@
+package illusory0x0/color
+
+// Values
+fn hsl_to_rgb(Double, Double, Double) -> (Double, Double, Double)
+
+fn rgb_to_hsl(Double, Double, Double) -> (Double, Double, Double)
+
+// Types and methods
+type Color
+impl Color {
+  alpha(Self) -> Byte
+  blue(Self) -> Byte
+  green(Self) -> Byte
+  hsl(UInt, UInt, UInt) -> Self!
+  hsla(UInt, UInt, UInt, UInt) -> Self!
+  new(UInt) -> Self
+  red(Self) -> Byte
+  rgb(Byte, Byte, Byte) -> Self
+  rgba(Byte, Byte, Byte, Byte) -> Self
+  to_hsl(Self) -> HSL
+}
+impl Compare for Color
+impl Default for Color
+impl Eq for Color
+impl Hash for Color
+impl Show for Color
+
+pub struct HSL {
+  hue : UInt
+  saturation : UInt
+  lightness : UInt
+}
+impl HSL {
+  new(UInt, UInt, UInt) -> Self!
+  to_color(Self) -> Color
+  to_hsla(Self) -> HSLA
+}
+impl Compare for HSL
+impl Default for HSL
+impl Eq for HSL
+impl Hash for HSL
+impl Show for HSL
+
+pub struct HSLA {
+  hue : UInt
+  saturation : UInt
+  lightness : UInt
+  alpha : UInt
+}
+impl HSLA {
+  new(UInt, UInt, UInt, UInt) -> Self!
+  to_color(Self) -> Color
+  to_hsl(Self) -> HSL
+}
+impl Compare for HSLA
+impl Default for HSLA
+impl Eq for HSLA
+impl Hash for HSLA
+impl Show for HSLA
+
+// Type aliases
+
+// Traits
+

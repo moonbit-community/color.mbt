@@ -1,10 +1,17 @@
 {
-  "name": "illusory0x0/hello",
+  "name": "illusory0x0/color",
   "version": "0.1.0",
   "readme": "README.md",
-  "repository": "",
+  "repository": "https://github.com/illusory0x0/color.mbt",
   "license": "Apache-2.0",
-  "keywords": [],
-  "description": "",
+  "keywords": [
+    "color",
+    "converter",
+    "hsl",
+    "hsla",
+    "rgb",
+    "rgba"
+  ],
+  "description": "rgb2hsl and hsl2rgb convertor",
   "source": "src"
 }
