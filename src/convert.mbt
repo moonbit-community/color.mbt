@@ -13,7 +13,11 @@ fn mod(x : Double, y : Double) -> Double {
 /// * g in \[0,1\]
 /// 
 /// * b in \[0,1\]
-pub fn rgb_to_hsl(r : Double, g : Double, b : Double) -> (Double, Double, Double) {
+pub fn rgb_to_hsl(
+  r : Double,
+  g : Double,
+  b : Double
+) -> (Double, Double, Double) {
   let x_max = @math.maximum(r, @math.maximum(g, b))
   let v = x_max
   let x_min = @math.minimum(r, @math.minimum(g, b))
@@ -44,7 +48,11 @@ pub fn rgb_to_hsl(r : Double, g : Double, b : Double) -> (Double, Double, Double
 /// s in \[0,1\]
 /// 
 /// l in \[0,1\]
-pub fn hsl_to_rgb(h : Double, s : Double, l : Double) -> (Double, Double, Double) {
+pub fn hsl_to_rgb(
+  h : Double,
+  s : Double,
+  l : Double
+) -> (Double, Double, Double) {
   let c = (1.0 - Double::abs(2.0 * l - 1.0)) * s
   let h_ = h / 60
   let x = c * (1.0 - Double::abs(h_ % 2.0 - 1.0))
@@ -64,4 +72,3 @@ pub fn hsl_to_rgb(h : Double, s : Double, l : Double) -> (Double, Double, Double
 
   (aux(r), aux(g), aux(b))
 }
-
