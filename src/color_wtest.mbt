@@ -1,5 +1,5 @@
 ///|
-test "ouput" {
+test "output" {
   inspect!(Color::new(0x00_00_00_00), content="00000000")
   inspect!(Color::new(0xFF_00_00_00), content="FF000000")
   inspect!(Color::new(0xFF_FF_00_00), content="FFFF0000")
