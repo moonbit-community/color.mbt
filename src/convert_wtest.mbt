@@ -23,7 +23,6 @@ test "rgb/hsl convert: assert_eq" {
 test "rgb/hsl convert: assert_eq_with_error" {
   let mut count = 0
   let error : Double = 0.000000000000001
-
   for h in 0U..<360 {
     for s in 0U..=100 {
       for l in 0U..=100 {

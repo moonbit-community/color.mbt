@@ -11,8 +11,8 @@ impl Color {
   alpha(Self) -> Byte
   blue(Self) -> Byte
   green(Self) -> Byte
-  hsl(UInt, UInt, UInt) -> Self!
-  hsla(UInt, UInt, UInt, UInt) -> Self!
+  hsl(UInt, UInt, UInt) -> Self
+  hsla(UInt, UInt, UInt, UInt) -> Self
   new(UInt) -> Self
   red(Self) -> Byte
   rgb(Byte, Byte, Byte) -> Self
@@ -31,7 +31,7 @@ pub struct HSL {
   lightness : UInt
 }
 impl HSL {
-  new(UInt, UInt, UInt) -> Self!
+  new(UInt, UInt, UInt) -> Self
   to_color(Self) -> Color
   to_hsla(Self) -> HSLA
 }
@@ -48,7 +48,7 @@ pub struct HSLA {
   alpha : UInt
 }
 impl HSLA {
-  new(UInt, UInt, UInt, UInt) -> Self!
+  new(UInt, UInt, UInt, UInt) -> Self
   to_color(Self) -> Color
   to_hsl(Self) -> HSL
 }

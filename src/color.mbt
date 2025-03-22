@@ -53,11 +53,9 @@ fn validate_hsla(
   saturation : UInt,
   lightness : UInt,
   alpha : UInt
-) -> Unit! {
-  assert_true!(hue < 360)
-  assert_true!(saturation <= 100)
-  assert_true!(lightness <= 100)
-  assert_true!(alpha <= 100)
+) -> Unit {
+  guard hue < 360 && saturation <= 100 && lightness <= 100 && alpha <= 100
+
 }
 
 ///| 
@@ -75,8 +73,8 @@ pub fn Color::hsla(
   saturation : UInt,
   lightness : UInt,
   alpha : UInt
-) -> Color! {
-  validate_hsla!(hue, saturation, lightness, alpha)
+) -> Color {
+  validate_hsla(hue, saturation, lightness, alpha)
   let h = hue.to_double()
   let s = saturation.to_double() / 100
   let l = lightness.to_double() / 100
@@ -100,8 +98,8 @@ pub fn Color::rgb(red : Byte, green : Byte, blue : Byte) -> Color {
 }
 
 ///|
-pub fn Color::hsl(hue : UInt, saturation : UInt, lightness : UInt) -> Color! {
-  Color::hsla!(hue, saturation, lightness, 100)
+pub fn Color::hsl(hue : UInt, saturation : UInt, lightness : UInt) -> Color {
+  Color::hsla(hue, saturation, lightness, 100)
 }
 
 ///|

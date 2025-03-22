@@ -8,22 +8,22 @@ test "output" {
 
 ///|
 test "hsl/rgb" {
-  let hsl_red = Color::hsl!(0, 100, 50)
+  let hsl_red = Color::hsl(0, 100, 50)
   let rgb_red = Color::rgb(255, 0, 0)
   assert_eq!(hsl_red, rgb_red)
-  let hsl_blue = Color::hsl!(240, 100, 50)
+  let hsl_blue = Color::hsl(240, 100, 50)
   let rgb_blue = Color::rgb(0, 0, 255)
   assert_eq!(hsl_blue, rgb_blue)
-  let hsl_green = Color::hsl!(120, 100, 50)
+  let hsl_green = Color::hsl(120, 100, 50)
   let rgb_green = Color::rgb(0, 255, 0)
   assert_eq!(hsl_green, rgb_green)
-  let hsl_white = Color::hsl!(0, 0, 100)
+  let hsl_white = Color::hsl(0, 0, 100)
   let rgb_white = Color::rgb(255, 255, 255)
   assert_eq!(hsl_white, rgb_white)
-  let hsl_black = Color::hsl!(0, 0, 0)
+  let hsl_black = Color::hsl(0, 0, 0)
   let rgb_black = Color::rgb(0, 0, 0)
   assert_eq!(hsl_black, rgb_black)
-  let hsl_purple = Color::hsl!(300, 100, 25)
+  let hsl_purple = Color::hsl(300, 100, 25)
   let rgb_purple = Color::rgb(128, 0, 128)
   assert_eq!(hsl_purple, rgb_purple)
 }
@@ -62,8 +62,8 @@ test "hsl/rgb convert error=5" {
         let h = h * 30
         let s = (s.to_double() / 4 * 100).to_uint()
         let l = (l.to_double() / 8 * 100).to_uint()
-        let actual = Color::hsl!(h, s, l).to_hsl().to_color()
-        let expected = HSL::new!(h, s, l).to_color()
+        let actual = Color::hsl(h, s, l).to_hsl().to_color()
+        let expected = HSL::new(h, s, l).to_color()
         let error : Double = 5
         assert_eq_with_error!(
           actual.red() |> b2d,
@@ -94,8 +94,8 @@ test "hsl/rgb convert error=10" {
   for h in 0U..<360 {
     for s in 0U..=100 {
       for l in 0U..=100 {
-        let actual = Color::hsl!(h, s, l).to_hsl().to_color()
-        let expected = HSL::new!(h, s, l).to_color()
+        let actual = Color::hsl(h, s, l).to_hsl().to_color()
+        let expected = HSL::new(h, s, l).to_color()
         let error : Double = 10
         assert_eq_with_error!(
           actual.red() |> b2d,
