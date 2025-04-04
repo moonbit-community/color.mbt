@@ -1,4 +1,4 @@
-package illusory0x0/color
+package "illusory0x0/color"
 
 // Values
 fn hsl_to_rgb(Double, Double, Double) -> (Double, Double, Double)
