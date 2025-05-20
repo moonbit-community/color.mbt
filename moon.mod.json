@@ -4,14 +4,7 @@
   "readme": "README.md",
   "repository": "https://github.com/illusory0x0/color.mbt",
   "license": "Apache-2.0",
-  "keywords": [
-    "color",
-    "converter",
-    "hsl",
-    "hsla",
-    "rgb",
-    "rgba"
-  ],
+  "keywords": ["color", "converter", "hsl", "hsla", "rgb", "rgba"],
   "description": "rgb2hsl and hsl2rgb convertor",
   "source": "src"
 }
