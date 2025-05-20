@@ -106,9 +106,9 @@ pub fn Color::hsl(hue : UInt, saturation : UInt, lightness : UInt) -> Color {
 pub impl Show for Color with output(self, logger) {
   fn to_xdigit(x : Byte) {
     if x < 10 {
-      x.to_int() + '0'.to_int() |> Char::from_int
+      x.to_int() + '0'.to_int() |> Int::unsafe_to_char
     } else {
-      x.to_int() - 10 + 'A'.to_int() |> Char::from_int
+      x.to_int() - 10 + 'A'.to_int() |> Int::unsafe_to_char
     }
   }
 
