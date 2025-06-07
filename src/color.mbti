@@ -7,18 +7,16 @@ fn rgb_to_hsl(Double, Double, Double) -> (Double, Double, Double)
 
 // Types and methods
 type Color
-impl Color {
-  alpha(Self) -> Byte
-  blue(Self) -> Byte
-  green(Self) -> Byte
-  hsl(UInt, UInt, UInt) -> Self
-  hsla(UInt, UInt, UInt, UInt) -> Self
-  new(UInt) -> Self
-  red(Self) -> Byte
-  rgb(Byte, Byte, Byte) -> Self
-  rgba(Byte, Byte, Byte, Byte) -> Self
-  to_hsl(Self) -> HSL
-}
+fn Color::alpha(Self) -> Byte
+fn Color::blue(Self) -> Byte
+fn Color::green(Self) -> Byte
+fn Color::hsl(UInt, UInt, UInt) -> Self
+fn Color::hsla(UInt, UInt, UInt, UInt) -> Self
+fn Color::new(UInt) -> Self
+fn Color::red(Self) -> Byte
+fn Color::rgb(Byte, Byte, Byte) -> Self
+fn Color::rgba(Byte, Byte, Byte, Byte) -> Self
+fn Color::to_hsl(Self) -> HSL
 impl Compare for Color
 impl Default for Color
 impl Eq for Color
@@ -30,11 +28,9 @@ pub struct HSL {
   saturation : UInt
   lightness : UInt
 }
-impl HSL {
-  new(UInt, UInt, UInt) -> Self
-  to_color(Self) -> Color
-  to_hsla(Self) -> HSLA
-}
+fn HSL::new(UInt, UInt, UInt) -> Self
+fn HSL::to_color(Self) -> Color
+fn HSL::to_hsla(Self) -> HSLA
 impl Compare for HSL
 impl Default for HSL
 impl Eq for HSL
@@ -47,11 +43,9 @@ pub struct HSLA {
   lightness : UInt
   alpha : UInt
 }
-impl HSLA {
-  new(UInt, UInt, UInt, UInt) -> Self
-  to_color(Self) -> Color
-  to_hsl(Self) -> HSL
-}
+fn HSLA::new(UInt, UInt, UInt, UInt) -> Self
+fn HSLA::to_color(Self) -> Color
+fn HSLA::to_hsl(Self) -> HSL
 impl Compare for HSLA
 impl Default for HSLA
 impl Eq for HSLA

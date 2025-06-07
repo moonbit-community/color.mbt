@@ -55,7 +55,6 @@ fn validate_hsla(
   alpha : UInt
 ) -> Unit {
   guard hue < 360 && saturation <= 100 && lightness <= 100 && alpha <= 100
-
 }
 
 ///| 
