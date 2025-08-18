@@ -18,9 +18,9 @@ pub fn rgb_to_hsl(
   g : Double,
   b : Double,
 ) -> (Double, Double, Double) {
-  let x_max = @math.maximum(r, @math.maximum(g, b))
+  let x_max = @cmp.maximum(r, @cmp.maximum(g, b))
   let v = x_max
-  let x_min = @math.minimum(r, @math.minimum(g, b))
+  let x_min = @cmp.minimum(r, @cmp.minimum(g, b))
   let c = x_max - x_min
   let l = (x_max + x_min) / 2
   let h = if c == 0 {
