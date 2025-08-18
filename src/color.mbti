@@ -1,9 +1,12 @@
+// Generated using `moon info`, DON'T EDIT IT
 package "illusory0x0/color"
 
 // Values
 fn hsl_to_rgb(Double, Double, Double) -> (Double, Double, Double)
 
 fn rgb_to_hsl(Double, Double, Double) -> (Double, Double, Double)
+
+// Errors
 
 // Types and methods
 type Color
