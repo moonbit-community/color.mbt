@@ -9,10 +9,10 @@ test "rgb/hsl convert: assert_eq" {
         let l = l.to_double() / 8
         let (r, g, b) = hsl_to_rgb(h, s, l)
         let (h_, s_, l_) = rgb_to_hsl(r, g, b)
-        assert_eq!(l, l_)
+        assert_eq(l, l_)
         if (l != 0 && l != 1) || (l_ != 0 && l_ != 1) {
-          assert_eq!(h, h_)
-          assert_eq!(s, s_)
+          assert_eq(h, h_)
+          assert_eq(s, s_)
         }
       }
     }
@@ -31,11 +31,11 @@ test "rgb/hsl convert: assert_eq_with_error" {
         let l = l.to_double() / 100
         let (r, g, b) = hsl_to_rgb(h, s, l)
         let (h_, s_, l_) = rgb_to_hsl(r, g, b)
-        assert_eq_with_error!(l, l_, error~)
+        assert_eq_with_error(l, l_, error~)
         if (l.round() != 0 && l.round() != 1) ||
           (l_.round() != 0 && l_.round() != 1) {
-          assert_eq_with_error!(h, h_, error~)
-          assert_eq_with_error!(s, s_, error~)
+          assert_eq_with_error(h, h_, error~)
+          assert_eq_with_error(s, s_, error~)
         }
       }
     }

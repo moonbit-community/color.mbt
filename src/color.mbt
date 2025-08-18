@@ -1,21 +1,21 @@
 ///|
 pub fn Color::red(self : Color) -> Byte {
-  ((self._ >> 24) & 0xFFU).to_byte()
+  ((self.inner() >> 24) & 0xFFU).to_byte()
 }
 
 ///|
 pub fn Color::green(self : Color) -> Byte {
-  ((self._ >> 16) & 0xFFU).to_byte()
+  ((self.inner() >> 16) & 0xFFU).to_byte()
 }
 
 ///|
 pub fn Color::blue(self : Color) -> Byte {
-  ((self._ >> 8) & 0xFFU).to_byte()
+  ((self.inner() >> 8) & 0xFFU).to_byte()
 }
 
 ///|
 pub fn Color::alpha(self : Color) -> Byte {
-  (self._ & 0xFFU).to_byte()
+  (self.inner() & 0xFFU).to_byte()
 }
 
 ///|
@@ -30,7 +30,7 @@ pub fn Color::rgba(
   red : Byte,
   green : Byte,
   blue : Byte,
-  alpha : Byte
+  alpha : Byte,
 ) -> Color {
   (red.to_uint() << 24) |
   (green.to_uint() << 16) |
@@ -41,10 +41,10 @@ pub fn Color::rgba(
 ///|
 test "rgba" {
   let color = Color::rgba(0x00, 0x10, 0x20, 0x30)
-  inspect!(color.red(), content="b'\\x00'")
-  inspect!(color.green(), content="b'\\x10'")
-  inspect!(color.blue(), content="b'\\x20'")
-  inspect!(color.alpha(), content="b'\\x30'")
+  inspect(color.red(), content="b'\\x00'")
+  inspect(color.green(), content="b'\\x10'")
+  inspect(color.blue(), content="b'\\x20'")
+  inspect(color.alpha(), content="b'\\x30'")
 }
 
 ///|
@@ -52,7 +52,7 @@ fn validate_hsla(
   hue : UInt,
   saturation : UInt,
   lightness : UInt,
-  alpha : UInt
+  alpha : UInt,
 ) -> Unit {
   guard hue < 360 && saturation <= 100 && lightness <= 100 && alpha <= 100
 }
@@ -71,7 +71,7 @@ pub fn Color::hsla(
   hue : UInt,
   saturation : UInt,
   lightness : UInt,
-  alpha : UInt
+  alpha : UInt,
 ) -> Color {
   validate_hsla(hue, saturation, lightness, alpha)
   let h = hue.to_double()
@@ -105,9 +105,9 @@ pub fn Color::hsl(hue : UInt, saturation : UInt, lightness : UInt) -> Color {
 pub impl Show for Color with output(self, logger) {
   fn to_xdigit(x : Byte) {
     if x < 10 {
-      x.to_int() + '0'.to_int() |> Int::unsafe_to_char
+      (x.to_int() + '0'.to_int()) |> Int::unsafe_to_char
     } else {
-      x.to_int() - 10 + 'A'.to_int() |> Int::unsafe_to_char
+      (x.to_int() - 10 + 'A'.to_int()) |> Int::unsafe_to_char
     }
   }
 
