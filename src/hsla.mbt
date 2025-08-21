@@ -8,7 +8,7 @@ pub fn HSLA::new(
   hue : UInt,
   saturation : UInt,
   lightness : UInt,
-  alpha : UInt
+  alpha : UInt,
 ) -> HSLA {
   validate_hsla(hue, saturation, lightness, alpha)
   { hue, saturation, lightness, alpha }

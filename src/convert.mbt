@@ -16,11 +16,11 @@ fn mod(x : Double, y : Double) -> Double {
 pub fn rgb_to_hsl(
   r : Double,
   g : Double,
-  b : Double
+  b : Double,
 ) -> (Double, Double, Double) {
-  let x_max = @math.maximum(r, @math.maximum(g, b))
+  let x_max = @cmp.maximum(r, @cmp.maximum(g, b))
   let v = x_max
-  let x_min = @math.minimum(r, @math.minimum(g, b))
+  let x_min = @cmp.minimum(r, @cmp.minimum(g, b))
   let c = x_max - x_min
   let l = (x_max + x_min) / 2
   let h = if c == 0 {
@@ -51,7 +51,7 @@ pub fn rgb_to_hsl(
 pub fn hsl_to_rgb(
   h : Double,
   s : Double,
-  l : Double
+  l : Double,
 ) -> (Double, Double, Double) {
   let c = (1.0 - Double::abs(2.0 * l - 1.0)) * s
   let h_ = h / 60

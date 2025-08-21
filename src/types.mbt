@@ -1,5 +1,5 @@
 ///| RGBA color
-type Color UInt derive(Default, Eq, Compare, Hash)
+struct Color(UInt) derive(Default, Eq, Compare, Hash)
 
 ///| HSL color
 pub struct HSL {
