@@ -1,0 +1,266 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "illusory0x0/color"
+
+// Values
+fn hex_to_rgb(StringView) -> RGB raise
+
+fn hsl_to_hex(HSL) -> String
+
+fn hsl_to_oklab(HSL, precision? : Int) -> LAB
+
+fn hsl_to_oklch(HSL, precision? : Int) -> LCH
+
+fn hsl_to_rgb(HSL) -> RGB
+
+fn oklab_to_hex(LAB, precision? : Int) -> String
+
+fn oklab_to_hsl(LAB, precision? : Int) -> HSL
+
+fn oklab_to_oklch(LAB, precision? : Int) -> LCH
+
+fn oklab_to_rgb(LAB, precision? : Int) -> RGB
+
+fn oklch_to_hex(LCH, precision? : Int) -> String
+
+fn oklch_to_hsl(LCH, precision? : Int) -> HSL
+
+fn oklch_to_oklab(LCH, precision? : Int) -> LAB
+
+fn oklch_to_rgb(LCH, precision? : Int) -> RGB
+
+fn parse_color_string(String) -> Colors raise
+
+fn rgb_to_hex(RGB) -> String
+
+fn rgb_to_hsl(RGB) -> HSL
+
+fn rgb_to_oklab(RGB, precision? : Int) -> LAB
+
+fn rgb_to_oklch(RGB, precision? : Int) -> LCH
+
+// Errors
+
+// Types and methods
+pub struct Colors {
+  alpha : Double?
+  hex : String
+  hsl : HSL
+  oklab : LAB
+  oklch : LCH
+  rgb : RGB
+  color_type : String
+}
+fn Colors::to_color_string(Self, precision? : Int) -> String
+fn Colors::to_color_string_with_alpha(Self, precision? : Int) -> String
+
+pub struct HSL {
+  h : Double
+  s : Double
+  l : Double
+  alpha : Double?
+}
+fn HSL::to_color_string(Self, precision? : Int) -> String
+fn HSL::to_color_string_with_alpha(Self, precision? : Int) -> String
+impl Compare for HSL
+impl Default for HSL
+impl Eq for HSL
+impl Hash for HSL
+impl Show for HSL
+
+pub struct LAB {
+  alpha : Double?
+  a : Double
+  b : Double
+  l : Double
+}
+fn LAB::to_color_string(Self, precision? : Int) -> String
+fn LAB::to_color_string_with_alpha(Self, precision? : Int) -> String
+impl Compare for LAB
+impl Default for LAB
+impl Eq for LAB
+impl Hash for LAB
+impl Show for LAB
+
+pub struct LCH {
+  alpha : Double?
+  l : Double
+  c : Double
+  h : Double
+}
+fn LCH::to_color_string(Self, precision? : Int) -> String
+fn LCH::to_color_string_with_alpha(Self, precision? : Int) -> String
+impl Compare for LCH
+impl Default for LCH
+impl Eq for LCH
+impl Hash for LCH
+impl Show for LCH
+
+pub struct RGB {
+  alpha : Double?
+  r : Double
+  g : Double
+  b : Double
+}
+fn RGB::aliceblue() -> Self
+fn RGB::antiquewhite() -> Self
+fn RGB::aqua() -> Self
+fn RGB::aquamarine() -> Self
+fn RGB::azure() -> Self
+fn RGB::beige() -> Self
+fn RGB::bisque() -> Self
+fn RGB::black() -> Self
+fn RGB::blanchedalmond() -> Self
+fn RGB::blue() -> Self
+fn RGB::blueviolet() -> Self
+fn RGB::brown() -> Self
+fn RGB::burlywood() -> Self
+fn RGB::cadetblue() -> Self
+fn RGB::chartreuse() -> Self
+fn RGB::chocolate() -> Self
+fn RGB::coral() -> Self
+fn RGB::cornflowerblue() -> Self
+fn RGB::cornsilk() -> Self
+fn RGB::crimson() -> Self
+fn RGB::cyan() -> Self
+fn RGB::darkblue() -> Self
+fn RGB::darkcyan() -> Self
+fn RGB::darkgoldenrod() -> Self
+fn RGB::darkgray() -> Self
+fn RGB::darkgreen() -> Self
+fn RGB::darkgrey() -> Self
+fn RGB::darkkhaki() -> Self
+fn RGB::darkmagenta() -> Self
+fn RGB::darkolivegreen() -> Self
+fn RGB::darkorange() -> Self
+fn RGB::darkorchid() -> Self
+fn RGB::darkred() -> Self
+fn RGB::darksalmon() -> Self
+fn RGB::darkseagreen() -> Self
+fn RGB::darkslateblue() -> Self
+fn RGB::darkslategray() -> Self
+fn RGB::darkslategrey() -> Self
+fn RGB::darkturquoise() -> Self
+fn RGB::darkviolet() -> Self
+fn RGB::deeppink() -> Self
+fn RGB::deepskyblue() -> Self
+fn RGB::dimgray() -> Self
+fn RGB::dimgrey() -> Self
+fn RGB::dodgerblue() -> Self
+fn RGB::firebrick() -> Self
+fn RGB::floralwhite() -> Self
+fn RGB::forestgreen() -> Self
+fn RGB::from_double(Double, Double, Double) -> Self
+fn RGB::from_hex(String) -> Self raise
+fn RGB::from_rgba_u32(UInt) -> Self
+fn RGB::fuchsia() -> Self
+fn RGB::gainsboro() -> Self
+fn RGB::ghostwhite() -> Self
+fn RGB::gold() -> Self
+fn RGB::goldenrod() -> Self
+fn RGB::gray() -> Self
+fn RGB::green() -> Self
+fn RGB::greenyellow() -> Self
+fn RGB::grey() -> Self
+fn RGB::honeydew() -> Self
+fn RGB::hotpink() -> Self
+fn RGB::indianred() -> Self
+fn RGB::indigo() -> Self
+fn RGB::ivory() -> Self
+fn RGB::khaki() -> Self
+fn RGB::lavender() -> Self
+fn RGB::lavenderblush() -> Self
+fn RGB::lawngreen() -> Self
+fn RGB::lemonchiffon() -> Self
+fn RGB::lightblue() -> Self
+fn RGB::lightcoral() -> Self
+fn RGB::lightcyan() -> Self
+fn RGB::lightgoldenrodyellow() -> Self
+fn RGB::lightgray() -> Self
+fn RGB::lightgreen() -> Self
+fn RGB::lightgrey() -> Self
+fn RGB::lightpink() -> Self
+fn RGB::lightsalmon() -> Self
+fn RGB::lightseagreen() -> Self
+fn RGB::lightskyblue() -> Self
+fn RGB::lightslategray() -> Self
+fn RGB::lightslategrey() -> Self
+fn RGB::lightsteelblue() -> Self
+fn RGB::lightyellow() -> Self
+fn RGB::lime() -> Self
+fn RGB::limegreen() -> Self
+fn RGB::linen() -> Self
+fn RGB::magenta() -> Self
+fn RGB::maroon() -> Self
+fn RGB::mediumaquamarine() -> Self
+fn RGB::mediumblue() -> Self
+fn RGB::mediumorchid() -> Self
+fn RGB::mediumpurple() -> Self
+fn RGB::mediumseagreen() -> Self
+fn RGB::mediumslateblue() -> Self
+fn RGB::mediumspringgreen() -> Self
+fn RGB::mediumturquoise() -> Self
+fn RGB::mediumvioletred() -> Self
+fn RGB::midnightblue() -> Self
+fn RGB::mintcream() -> Self
+fn RGB::mistyrose() -> Self
+fn RGB::moccasin() -> Self
+fn RGB::navajowhite() -> Self
+fn RGB::navy() -> Self
+fn RGB::oldlace() -> Self
+fn RGB::olive() -> Self
+fn RGB::olivedrab() -> Self
+fn RGB::orange() -> Self
+fn RGB::orangered() -> Self
+fn RGB::orchid() -> Self
+fn RGB::palegoldenrod() -> Self
+fn RGB::palegreen() -> Self
+fn RGB::paleturquoise() -> Self
+fn RGB::palevioletred() -> Self
+fn RGB::papayawhip() -> Self
+fn RGB::peachpuff() -> Self
+fn RGB::peru() -> Self
+fn RGB::pink() -> Self
+fn RGB::plum() -> Self
+fn RGB::powderblue() -> Self
+fn RGB::purple() -> Self
+fn RGB::rebeccapurple() -> Self
+fn RGB::red() -> Self
+fn RGB::rosybrown() -> Self
+fn RGB::royalblue() -> Self
+fn RGB::saddlebrown() -> Self
+fn RGB::salmon() -> Self
+fn RGB::sandybrown() -> Self
+fn RGB::seagreen() -> Self
+fn RGB::seashell() -> Self
+fn RGB::sienna() -> Self
+fn RGB::silver() -> Self
+fn RGB::skyblue() -> Self
+fn RGB::slateblue() -> Self
+fn RGB::slategray() -> Self
+fn RGB::slategrey() -> Self
+fn RGB::snow() -> Self
+fn RGB::springgreen() -> Self
+fn RGB::steelblue() -> Self
+fn RGB::tan() -> Self
+fn RGB::teal() -> Self
+fn RGB::thistle() -> Self
+fn RGB::to_color_string(Self) -> String
+fn RGB::to_color_string_with_alpha(Self, precision? : Int) -> String
+fn RGB::tomato() -> Self
+fn RGB::turquoise() -> Self
+fn RGB::violet() -> Self
+fn RGB::wheat() -> Self
+fn RGB::white() -> Self
+fn RGB::whitesmoke() -> Self
+fn RGB::yellow() -> Self
+fn RGB::yellowgreen() -> Self
+impl Compare for RGB
+impl Default for RGB
+impl Eq for RGB
+impl Hash for RGB
+impl Show for RGB
+
+// Type aliases
+
+// Traits
+

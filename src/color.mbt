@@ -1,143 +1,186 @@
 ///|
-pub fn Color::red(self : Color) -> Byte {
-  ((self.inner() >> 24) & 0xFFU).to_byte()
+/// Construct an RGB from Double channels.
+/// - r,g,b are Double in [0,255]
+pub fn RGB::from_double(r : Double, g : Double, b : Double) -> RGB {
+  RGB::{ alpha: None, r, g, b }
 }
 
 ///|
-pub fn Color::green(self : Color) -> Byte {
-  ((self.inner() >> 16) & 0xFFU).to_byte()
+/// Construct an RGB from a hex string.
+/// - input format: "#RRGGBB"
+pub fn RGB::from_hex(input : HEX) -> RGB raise {
+  hex_to_rgb(input)
 }
 
 ///|
-pub fn Color::blue(self : Color) -> Byte {
-  ((self.inner() >> 8) & 0xFFU).to_byte()
+/// Construct an RGB from a 32-bit packed RGBA integer 0xRRGGBBAA.
+/// - Each byte is 8-bit sRGB; alpha byte AA will be normalized to [0,1].
+/// - Example: 0xFF_FF_FF_00 => r=255, g=255, b=255, alpha=0.0 (fully transparent white)
+pub fn RGB::from_rgba_u32(rgba : UInt) -> RGB {
+  let r = ((rgba >> 24) & 0xFFU).to_double()
+  let g = ((rgba >> 16) & 0xFFU).to_double()
+  let b = ((rgba >> 8) & 0xFFU).to_double()
+  let a = (rgba & 0xFFU).to_double() / 255.0
+  RGB::{ r, g, b, alpha: Some(a) }
 }
 
 ///|
-pub fn Color::alpha(self : Color) -> Byte {
-  (self.inner() & 0xFFU).to_byte()
+/// Format helpers for color string outputs.
+fn percent_string(value : Double, precision? : Int = PRECISION) -> String {
+  // Round then rely on Double::to_string to trim unnecessary trailing zeros
+  let v = round(value * 100.0, precision~)
+  "\{v}%"
 }
 
 ///|
-/// * `red` in \[0,255\]
-/// 
-/// * `green` in \[0,255\]
-/// 
-/// * `blue` in \[0,255\]
-/// 
-/// * `alpha` in \[0,255\]
-pub fn Color::rgba(
-  red : Byte,
-  green : Byte,
-  blue : Byte,
-  alpha : Byte,
-) -> Color {
-  (red.to_uint() << 24) |
-  (green.to_uint() << 16) |
-  (blue.to_uint() << 8) |
-  alpha.to_uint()
+fn fixed_string(value : Double, precision? : Int = PRECISION) -> String {
+  // Round to desired precision; Double::to_string already trims, which is fine
+  // Keep behavior consistent across a/b/c/h fields
+  let v = round(value, precision~)
+  v.to_string()
 }
 
 ///|
-test "rgba" {
-  let color = Color::rgba(0x00, 0x10, 0x20, 0x30)
-  inspect(color.red(), content="b'\\x00'")
-  inspect(color.green(), content="b'\\x10'")
-  inspect(color.blue(), content="b'\\x20'")
-  inspect(color.alpha(), content="b'\\x30'")
+/// Helper: convert a byte [0,255] to two-digit lowercase hex string.
+fn byte_to_hex2(u : UInt) -> String {
+  let s = u.to_string(radix=16)
+  if u < 16U { "0\{s}" } else { s }
 }
 
 ///|
-fn validate_hsla(
-  hue : UInt,
-  saturation : UInt,
-  lightness : UInt,
-  alpha : UInt,
-) -> Unit {
-  guard hue < 360 && saturation <= 100 && lightness <= 100 && alpha <= 100
+/// Helper: append/compose hex with alpha as #RRGGBBAA using the provided alpha [0,1].
+fn hex_with_alpha(hex : StringView, alpha : Double) -> String {
+  let a = clamp(alpha, min=0, max=1)
+  let a_byte = @math.floor(a * 255.0).to_uint()
+  let aa = byte_to_hex2(a_byte)
+  // Compose #RRGGBBAA by appending AA to #RRGGBB
+  "\{hex}\{aa}"
 }
 
-///| 
-/// * `hue` in \[0,360)
-/// 
-/// * `saturation` in \[0,100\]
-/// 
-/// * `lightness` in \[0,100\]
-/// 
-/// * `alpha` in \[0,100\]
-/// 
-/// [wiki](https://en.wikipedia.org/wiki/HSL_and_HSV)
-pub fn Color::hsla(
-  hue : UInt,
-  saturation : UInt,
-  lightness : UInt,
-  alpha : UInt,
-) -> Color {
-  validate_hsla(hue, saturation, lightness, alpha)
-  let h = hue.to_double()
-  let s = saturation.to_double() / 100
-  let l = lightness.to_double() / 100
-  let a = alpha.to_double() / 100
-  fn to_byte(v : Double) -> Byte {
-    (v * 255.0).round().to_int().to_byte()
+///|
+/// Convert an HSL to CSS-like color string: "hsl(H S% L%)"
+pub fn HSL::to_color_string(self : HSL, precision? : Int = PRECISION) -> String {
+  let h_str = fixed_string(self.h, precision~)
+  let s_str = percent_string(self.s, precision~)
+  let l_str = percent_string(self.l, precision~)
+  "hsl(\{h_str} \{s_str} \{l_str})"
+}
+
+///|
+/// Convert HSL to CSS-like color string including alpha when present: "hsl(H S% L% / A)".
+pub fn HSL::to_color_string_with_alpha(
+  self : HSL,
+  precision? : Int = PRECISION,
+) -> String {
+  let base = self.to_color_string(precision~)
+  match self.alpha {
+    None => base
+    Some(a) => "\{base} / \{fixed_string(clamp(a, min=0, max=1), precision~)}"
   }
-
-  let (r, g, b) = hsl_to_rgb(h, s, l)
-  Color::rgba(
-    to_byte(r),
-    to_byte(g),
-    to_byte(b),
-    (a * 255.0).to_uint().to_byte(),
-  )
 }
 
 ///|
-pub fn Color::rgb(red : Byte, green : Byte, blue : Byte) -> Color {
-  Color::rgba(red, green, blue, 255)
+/// Convert an RGB to CSS-like color string: "rgb(R G B)" (8-bit integers)
+pub fn RGB::to_color_string(self : RGB) -> String {
+  let r = self.r.to_uint()
+  let g = self.g.to_uint()
+  let b = self.b.to_uint()
+  "rgb(\{r} \{g} \{b})"
 }
 
 ///|
-pub fn Color::hsl(hue : UInt, saturation : UInt, lightness : UInt) -> Color {
-  Color::hsla(hue, saturation, lightness, 100)
-}
-
-///|
-pub impl Show for Color with output(self, logger) {
-  fn to_xdigit(x : Byte) {
-    if x < 10 {
-      (x.to_int() + '0'.to_int()) |> Int::unsafe_to_char
-    } else {
-      (x.to_int() - 10 + 'A'.to_int()) |> Int::unsafe_to_char
-    }
+/// Convert RGB to CSS-like color string including alpha when present: "rgb(R G B / A)".
+pub fn RGB::to_color_string_with_alpha(
+  self : RGB,
+  precision? : Int = PRECISION,
+) -> String {
+  let base = self.to_color_string()
+  match self.alpha {
+    None => base
+    Some(a) => "\{base} / \{fixed_string(clamp(a, min=0, max=1), precision~)}"
   }
-
-  fn aux(x : Byte) {
-    if x < 0x0f {
-      logger.write_char('0')
-      logger.write_char(to_xdigit(x))
-    } else {
-      logger.write_char(to_xdigit(x >> 4))
-      logger.write_char(to_xdigit(x & 0x0F))
-    }
-  }
-
-  aux(self.red())
-  aux(self.green())
-  aux(self.blue())
-  aux(self.alpha())
 }
 
 ///|
-pub fn Color::new(x : UInt) -> Color = "%identity"
+/// Convert an Oklab to string: "oklab(L% a b)"
+pub fn LAB::to_color_string(self : LAB, precision? : Int = PRECISION) -> String {
+  let l_str = percent_string(self.l, precision~)
+  let a_str = fixed_string(self.a, precision~)
+  let b_str = fixed_string(self.b, precision~)
+  "oklab(\{l_str} \{a_str} \{b_str})"
+}
 
 ///|
-pub fn Color::to_hsl(self : Color) -> HSL {
-  let r = self.red().to_int().to_double() / 255
-  let g = self.green().to_int().to_double() / 255
-  let b = self.blue().to_int().to_double() / 255
-  let (h, s, l) = rgb_to_hsl(r, g, b)
-  let hue = h.to_uint()
-  let lightness = (l * 100).to_uint()
-  let saturation = (s * 100).to_uint()
-  { hue, saturation, lightness }
+/// Convert Oklab to string including alpha when present: "oklab(L% a b / A)".
+pub fn LAB::to_color_string_with_alpha(
+  self : LAB,
+  precision? : Int = PRECISION,
+) -> String {
+  let base = self.to_color_string(precision~)
+  match self.alpha {
+    None => base
+    Some(a) => "\{base} / \{fixed_string(clamp(a, min=0, max=1), precision~)}"
+  }
+}
+
+///|
+/// Convert an Oklch to string: "oklch(L% c h)"
+pub fn LCH::to_color_string(self : LCH, precision? : Int = PRECISION) -> String {
+  let l_str = percent_string(self.l, precision~)
+  let c_str = fixed_string(self.c, precision~)
+  let h_str = fixed_string(self.h, precision~)
+  "oklch(\{l_str} \{c_str} \{h_str})"
+}
+
+///|
+/// Convert Oklch to string including alpha when present: "oklch(L% c h / A)".
+pub fn LCH::to_color_string_with_alpha(
+  self : LCH,
+  precision? : Int = PRECISION,
+) -> String {
+  let base = self.to_color_string(precision~)
+  match self.alpha {
+    None => base
+    Some(a) => "\{base} / \{fixed_string(clamp(a, min=0, max=1), precision~)}"
+  }
+}
+
+///|
+/// Convert a Colors container to a string according to its color_type.
+/// Supported types: "hex", "rgb", "hsl", "oklab", "oklch".
+pub fn Colors::to_color_string(
+  self : Colors,
+  precision? : Int = PRECISION,
+) -> String {
+  let ty = self.color_type
+  match ty {
+    "hex" => self.hex
+    "rgb" => self.rgb.to_color_string()
+    "hsl" => self.hsl.to_color_string(precision~)
+    "oklab" => self.oklab.to_color_string(precision~)
+    "oklch" => self.oklch.to_color_string(precision~)
+    _ => self.hex
+  }
+}
+
+///|
+/// Convert Colors to a string following color_type and append "/ alpha" when alpha exists.
+/// Note: When color_type == "hex", alpha is not appended to hex string.
+pub fn Colors::to_color_string_with_alpha(
+  self : Colors,
+  precision? : Int = PRECISION,
+) -> String {
+  let ty = self.color_type
+  match ty {
+    "hex" =>
+      match self.alpha {
+        None => self.hex
+        Some(a) => hex_with_alpha(self.hex, a)
+      }
+    "rgb" => self.rgb.to_color_string_with_alpha(precision~)
+    "hsl" => self.hsl.to_color_string_with_alpha(precision~)
+    "oklab" => self.oklab.to_color_string_with_alpha(precision~)
+    "oklch" => self.oklch.to_color_string_with_alpha(precision~)
+    _ => self.hex
+  }
 }
