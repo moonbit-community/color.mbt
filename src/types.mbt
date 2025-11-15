@@ -1,17 +1,49 @@
-///| RGBA color
-struct Color(UInt) derive(Default, Eq, Compare, Hash)
+///|
+type HEX = String
 
-///| HSL color
+///|
+type ColorType = String
+
+///|
+/// HSLA color
 pub struct HSL {
-  hue : UInt
-  saturation : UInt
-  lightness : UInt
+  h : Double
+  s : Double
+  l : Double
+  alpha : Double?
 } derive(Show, Default, Eq, Compare, Hash)
 
-///| HSLA color
-pub struct HSLA {
-  hue : UInt
-  saturation : UInt
-  lightness : UInt
-  alpha : UInt
+///|
+pub struct LAB {
+  alpha : Double?
+  a : Double
+  b : Double
+  l : Double
 } derive(Show, Default, Eq, Compare, Hash)
+
+///|
+pub struct LCH {
+  alpha : Double?
+  l : Double
+  c : Double
+  h : Double
+} derive(Show, Default, Eq, Compare, Hash)
+
+///|
+pub struct RGB {
+  alpha : UInt?
+  r : UInt
+  g : UInt
+  b : UInt
+} derive(Show, Default, Eq, Compare, Hash)
+
+///|
+pub struct Colors {
+  alpha : Double?
+  hex : HEX
+  hsl : HSL
+  oklab : LAB
+  oklch : LCH
+  rgb : RGB
+  color_type : String
+}

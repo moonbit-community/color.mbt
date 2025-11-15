@@ -8,16 +8,94 @@ fn mod(x : Double, y : Double) -> Double {
 }
 
 ///|
-/// * r in \[0,1\]
-/// 
-/// * g in \[0,1\]
-/// 
-/// * b in \[0,1\]
-pub fn rgb_to_hsl(
-  r : Double,
-  g : Double,
-  b : Double,
-) -> (Double, Double, Double) {
+fn sign(x : Double) -> Double {
+  if x > 0.0 {
+    1.0
+  } else if x < 0.0 {
+    -1.0
+  } else {
+    0.0
+  }
+}
+
+///|
+fn clamp(value : Double, min? : Double = 0, max? : Double = 100) -> Double {
+  let v = if value < min { min } else { value }
+  if v > max {
+    max
+  } else {
+    v
+  }
+}
+
+///|
+fn round(
+  input : Double,
+  precision? : Int = 2,
+  force_precision? : Bool = true,
+) -> Double {
+  if input == 0.0 {
+    return 0.0
+  }
+  if force_precision {
+    let factor = @math.pow(10.0, precision.to_double())
+    return @math.round(input * factor) / factor
+  }
+  let abs_input = Double::abs(input)
+  let mut digits = Double::abs(@math.ceil(@math.log10(abs_input))).to_int()
+  if digits == 0 {
+    digits = 2
+  } else if digits > precision {
+    digits = precision
+  }
+  let mut exponent = precision - (if digits < 0 { 0 } else { digits })
+  if exponent <= 1 && precision > 1 {
+    exponent = 2
+  } else if exponent > precision || exponent == 0 {
+    exponent = precision
+  }
+  let factor = @math.pow(10.0, exponent.to_double())
+  @math.round(input * factor) / factor
+}
+
+///|
+fn rgb_to_linear(c : UInt) -> Double {
+  let input = c.to_double() / 255.0
+  let absval = Double::abs(input)
+  if absval < 0.04045 {
+    input / 12.92
+  } else {
+    let base = (absval + 0.055) / 1.055
+    let lin = @math.pow(base, 2.4)
+    (if sign(input) == 0.0 { 1.0 } else { sign(input) }) * lin
+  }
+}
+
+///|
+fn linear_to_rgb(input : Double) -> Double {
+  let absolute_number = Double::abs(input)
+  let sign_value = if input < 0.0 { -1.0 } else { 1.0 }
+  if absolute_number > 0.0031308 {
+    let v = @math.pow(absolute_number, 1.0 / 2.4) * 1.055 - 0.055
+    sign_value * v
+  } else {
+    input * 12.92
+  }
+}
+
+///|
+pub fn hex_to_rgb(input : StringView) -> RGB raise {
+  let r = @strconv.parse_uint(input[1:3], base=16)
+  let g = @strconv.parse_uint(input[3:5], base=16)
+  let b = @strconv.parse_uint(input[5:], base=16)
+  RGB::{ r, g, b, alpha: None }
+}
+
+///|
+pub fn rgb_to_hsl(rgb : RGB) -> HSL {
+  let r = rgb.r.to_double() / 255
+  let g = rgb.g.to_double() / 255
+  let b = rgb.b.to_double() / 255
   let x_max = @cmp.maximum(r, @cmp.maximum(g, b))
   let v = x_max
   let x_min = @cmp.minimum(r, @cmp.minimum(g, b))
@@ -39,20 +117,50 @@ pub fn rgb_to_hsl(
   } else {
     2.0 * (v - l) / (1.0 - Double::abs(2.0 * l - 1))
   }
-  (h, s, l)
+  HSL::{ h, s, l, alpha: None }
 }
 
 ///|
-/// h in \[0,360)
-/// 
-/// s in \[0,1\]
-/// 
-/// l in \[0,1\]
-pub fn hsl_to_rgb(
-  h : Double,
-  s : Double,
-  l : Double,
-) -> (Double, Double, Double) {
+/// no handling alpha
+pub fn rgb_to_hex(rgb : RGB) -> HEX {
+  "\{rgb.r.to_string(radix=16)}\{rgb.g.to_string(radix=16)}\{rgb.b.to_string(radix=16)}"
+}
+
+///|
+pub fn rgb_to_oklab(rgb : RGB, precision? : Int = PRECISION) -> LAB {
+  let lr = rgb_to_linear(rgb.r)
+  let lg = rgb_to_linear(rgb.g)
+  let lb = rgb_to_linear(rgb.b)
+  let l = @math.cbrt(
+    lrgb_to_lms.l.0 * lr + lrgb_to_lms.l.1 * lg + lrgb_to_lms.l.2 * lb,
+  )
+  let m = @math.cbrt(
+    lrgb_to_lms.m.0 * lr + lrgb_to_lms.m.1 * lg + lrgb_to_lms.m.2 * lb,
+  )
+  let s = @math.cbrt(
+    lrgb_to_lms.s.0 * lr + lrgb_to_lms.s.1 * lg + lrgb_to_lms.s.2 * lb,
+  )
+  let ok_l = lsm_to_lab.l.0 * l + lsm_to_lab.l.1 * m - lsm_to_lab.l.2 * s
+  let ok_a = lsm_to_lab.a.0 * l - lsm_to_lab.a.1 * m + lsm_to_lab.a.2 * s
+  let ok_b = lsm_to_lab.b.0 * l + lsm_to_lab.b.1 * m - lsm_to_lab.b.2 * s
+  LAB::{
+    l: round(ok_l, precision~),
+    a: round(ok_a, precision~),
+    b: round(ok_b, precision~),
+    alpha: None,
+  }
+}
+
+///|
+pub fn rgb_to_oklch(rgb : RGB, precision? : Int = PRECISION) -> LCH {
+  return oklab_to_oklch(rgb_to_oklab(rgb, precision~), precision~)
+}
+
+///|
+pub fn hsl_to_rgb(hsl : HSL) -> RGB {
+  let h = hsl.h
+  let s = hsl.s
+  let l = hsl.l
   let c = (1.0 - Double::abs(2.0 * l - 1.0)) * s
   let h_ = h / 60
   let x = c * (1.0 - Double::abs(h_ % 2.0 - 1.0))
@@ -70,5 +178,111 @@ pub fn hsl_to_rgb(
     v + m
   }
 
-  (aux(r), aux(g), aux(b))
+  RGB::from_double(aux(r), aux(g), aux(b))
+}
+
+///|
+pub fn hsl_to_hex(hsl : HSL) -> HEX {
+  rgb_to_hex(hsl_to_rgb(hsl))
+}
+
+///|
+pub fn hsl_to_oklab(hsl : HSL, precision? : Int = PRECISION) -> LAB {
+  rgb_to_oklab(hsl_to_rgb(hsl), precision~)
+}
+
+///|
+pub fn hsl_to_oklch(hsl : HSL, precision? : Int = PRECISION) -> LCH {
+  rgb_to_oklch(hsl_to_rgb(hsl), precision~)
+}
+
+///|
+pub fn oklab_to_oklch(lab : LAB, precision? : Int = PRECISION) -> LCH {
+  let l = lab.l
+  let a = lab.a
+  let b = lab.b
+  let c = Double::sqrt(@math.pow(a, 2) + @math.pow(b, 2))
+  let mut h = (@math.atan2(b, a) * RAD2DEG + 360) % 360
+  if round(c * 10000) == 0 {
+    h = 0
+  }
+  LCH::{
+    l: round(l, precision~),
+    c: round(c, precision~),
+    h: round(h, precision~),
+    alpha: None,
+  }
+}
+
+///|
+pub fn oklab_to_hex(lab : LAB, precision? : Int = PRECISION) -> HEX {
+  rgb_to_hex(oklab_to_rgb(lab, precision~))
+}
+
+///|
+pub fn oklab_to_hsl(lab : LAB, precision? : Int = PRECISION) -> HSL {
+  rgb_to_hsl(oklab_to_rgb(lab, precision~))
+}
+
+///|
+pub fn oklab_to_rgb(lab : LAB, precision? : Int = PRECISION) -> RGB {
+  let l = lab.l
+  let a = lab.a
+  let b = lab.b
+  let _l = @math.pow(l + lab_to_lms.l.0 * a + lab_to_lms.l.1 * b, 3)
+  let _m = @math.pow(l + lab_to_lms.m.0 * a + lab_to_lms.m.1 * b, 3)
+  let _s = @math.pow(l + lab_to_lms.s.0 * a + lab_to_lms.s.1 * b, 3)
+  let r = linear_to_rgb(
+      lsm_to_rgb.r.0 * _l + lsm_to_rgb.r.1 * _m + lsm_to_rgb.r.2 * _s,
+    ) *
+    255
+  let g = linear_to_rgb(
+      lsm_to_rgb.g.0 * _l + lsm_to_rgb.g.1 * _m + lsm_to_rgb.g.2 * _s,
+    ) *
+    255
+  let b = linear_to_rgb(
+      lsm_to_rgb.b.0 * _l + lsm_to_rgb.b.1 * _m + lsm_to_rgb.b.2 * _s,
+    ) *
+    255
+  RGB::{
+    r: clamp(round(r, precision~), min=0, max=255).to_uint(),
+    g: clamp(round(g, precision~), min=0, max=255).to_uint(),
+    b: clamp(round(b, precision~), min=0, max=255).to_uint(),
+    alpha: None,
+  }
+}
+
+///|
+/// Convert from a qualitative parameter h and a quantitative parameter l to a 24-bit pixel.
+/// These formulas were invented by David Dalrymple to obtain maximum contrast without going
+/// out of gamut if the parameters are in the range 0-1.
+/// A saturation multiplier was added by Gregor Aisch
+pub fn oklch_to_oklab(lch : LCH, precision? : Int = PRECISION) -> LAB {
+  let l = lch.l
+  let c = lch.c
+  let mut h = lch.h
+  if h < 0 {
+    h = 0
+  }
+  LAB::{
+    l: round(l, precision~),
+    a: round(c * @math.cos(h * DEG2RAD), precision~),
+    b: round(c * @math.sin(h * DEG2RAD), precision~),
+    alpha: None,
+  }
+}
+
+///|
+pub fn oklch_to_rgb(lch : LCH, precision? : Int = PRECISION) -> RGB {
+  oklab_to_rgb(oklch_to_oklab(lch, precision~), precision~)
+}
+
+///|
+pub fn oklch_to_hex(lch : LCH, precision? : Int = PRECISION) -> HEX {
+  rgb_to_hex(oklch_to_rgb(lch, precision~))
+}
+
+///|
+pub fn oklch_to_hsl(lch : LCH, precision? : Int = PRECISION) -> HSL {
+  rgb_to_hsl(oklch_to_rgb(lch, precision~))
 }
