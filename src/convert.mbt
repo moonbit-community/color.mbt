@@ -1,5 +1,5 @@
 ///|
-/// Compute the positive modulo of x by y so the result is in [0, y).
+/// Compute the positive modulo so the result lies in [0, y).
 /// - params: x is any real number; y > 0
 /// - returns: positive modulo as Double
 fn mod(x : Double, y : Double) -> Double {
@@ -33,9 +33,9 @@ fn clamp(value : Double, min? : Double = 0, max? : Double = 100) -> Double {
 
 ///|
 /// Round a floating-point number to a given precision.
-/// - precision: number of fractional digits to keep (default 2)
-/// - force_precision: when true, round exactly to precision; when false, choose digits adaptively by magnitude
-/// - returns: rounded result
+/// - precision: fractional digits to keep (default 2)
+/// - force_precision: when true, round exactly to `precision` digits; when false, choose digits adaptively by magnitude
+/// - returns: rounded Double
 fn round(
   input : Double,
   precision? : Int = 2,
@@ -67,10 +67,10 @@ fn round(
 
 ///|
 /// Convert an 8-bit sRGB channel to linear RGB (inverse gamma).
-/// - param: c in [0, 255]
-/// - returns: linear-space Double, approximately in [-1, 1]
-fn rgb_to_linear(c : UInt) -> Double {
-  let input = c.to_double() / 255.0
+/// - param: c in [0, 255] (Double)
+/// - returns: linear-space Double in [0, 1] for non-negative inputs
+fn rgb_to_linear(c : Double) -> Double {
+  let input = c / 255.0
   let absval = Double::abs(input)
   if absval < 0.04045 {
     input / 12.92
@@ -83,8 +83,8 @@ fn rgb_to_linear(c : UInt) -> Double {
 
 ///|
 /// Convert a linear RGB channel value to sRGB (gamma encode).
-/// - param: input is a linear-space value
-/// - returns: sRGB-space Double (not scaled to 0–255)
+/// - param: input is a linear-space value (typically in [0, 1])
+/// - returns: sRGB-space Double in [0, 1]; scale by 255 for 8-bit channels
 fn linear_to_rgb(input : Double) -> Double {
   let absolute_number = Double::abs(input)
   let sign_value = if input < 0.0 { -1.0 } else { 1.0 }
@@ -98,7 +98,8 @@ fn linear_to_rgb(input : Double) -> Double {
 
 ///|
 /// Parse a hex color string to RGB.
-/// - input format: "#RRGGBB" (case-insensitive)
+/// - input format: "#RRGGBB" (case-insensitive, without alpha)
+/// - returns: `RGB` where r,g,b are Double in [0, 255]
 /// - on failure: raises a parse error
 pub fn hex_to_rgb(input : StringView) -> RGB raise {
   let r = @strconv.parse_uint(input[1:3], base=16).to_double()
@@ -109,7 +110,7 @@ pub fn hex_to_rgb(input : StringView) -> RGB raise {
 
 ///|
 /// Convert RGB to HSL (alpha ignored).
-/// - input: r,g,b in [0,255]
+/// - input: r,g,b in [0,255] (Double)
 /// - output: h in [0,360), s,l in [0,1]
 pub fn rgb_to_hsl(rgb : RGB) -> HSL {
   let r = rgb.r / 255
@@ -141,7 +142,7 @@ pub fn rgb_to_hsl(rgb : RGB) -> HSL {
 
 ///|
 /// Convert RGB to a hex string (alpha ignored).
-/// - returns: "rrggbb" (no leading #)
+/// - returns: "rrggbb" (lowercase, no leading #)
 pub fn rgb_to_hex(rgb : RGB) -> HEX {
   "\{rgb.r.to_uint().to_string(radix=16)}\{rgb.g.to_uint().to_string(radix=16)}\{rgb.b.to_uint().to_string(radix=16)}"
 }
@@ -183,7 +184,7 @@ pub fn rgb_to_oklch(rgb : RGB, precision? : Int = PRECISION) -> LCH {
 ///|
 /// Convert HSL to RGB.
 /// - input: h in [0,360), s,l in [0,1]
-/// - output: r,g,b in [0,255]
+/// - output: r,g,b in [0,255] (Double)
 pub fn hsl_to_rgb(hsl : HSL) -> RGB {
   let h = hsl.h
   let s = hsl.s
@@ -261,7 +262,7 @@ pub fn oklab_to_hsl(lab : LAB, precision? : Int = PRECISION) -> HSL {
 }
 
 ///|
-/// Convert Oklab to RGB, then clamp and round the result.
+/// Convert Oklab to RGB, then round and clamp the result to [0,255].
 /// - precision: fractional digits to round before clamping
 pub fn oklab_to_rgb(lab : LAB, precision? : Int = PRECISION) -> RGB {
   let l = lab.l
@@ -293,7 +294,7 @@ pub fn oklab_to_rgb(lab : LAB, precision? : Int = PRECISION) -> RGB {
 ///|
 /// Convert Oklch to Oklab and round components.
 /// - h is in degrees; if h < 0 it is clamped to 0
-/// - a/b are computed from c and h using trigonometry
+/// - a/b are computed from c and h via trigonometry
 pub fn oklch_to_oklab(lch : LCH, precision? : Int = PRECISION) -> LAB {
   let l = lch.l
   let c = lch.c
