@@ -28,12 +28,7 @@ fn sign(x : Double) -> Double {
 /// - defaults: [0, 100]
 /// - returns: min if value < min; max if value > max; otherwise value
 fn clamp(value : Double, min? : Double = 0, max? : Double = 100) -> Double {
-  let v = if value < min { min } else { value }
-  if v > max {
-    max
-  } else {
-    v
-  }
+  @cmp.minimum(@cmp.maximum(value, min), max)
 }
 
 ///|
