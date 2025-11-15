@@ -175,3 +175,74 @@ test "parse_color_string: oklch with numeric alpha" {
   assert_eq_with_error(1.0, c.hsl.s, error=eps_sl)
   assert_eq_with_error(0.5, c.hsl.l, error=eps_sl)
 }
+
+///|
+test "parse_color_string: hsl space sep with slash numeric alpha" {
+  let eps : Double = 0.00001
+  let c = parse_color_string("hsl(344 100% 50% / 0.33333)")
+  assert_eq_str(c.color_type, "hsl")
+  assert_eq_with_error(0.33333, c.alpha.unwrap(), error=eps)
+  assert_eq_with_error(0.33333, c.hsl.alpha.unwrap(), error=eps)
+}
+
+///|
+test "parse_color_string: hsl space sep with slash percent alpha" {
+  let eps : Double = 0.00001
+  let c = parse_color_string("hsl(344 100% 50% / 33.333%)")
+  assert_eq_str(c.color_type, "hsl")
+  assert_eq_with_error(0.33333, c.alpha.unwrap(), error=eps)
+  assert_eq_with_error(0.33333, c.hsl.alpha.unwrap(), error=eps)
+}
+
+///|
+test "parse_color_string: HSLA uppercase space sep with numeric alpha" {
+  let eps : Double = 0.00001
+  let c = parse_color_string("HSLA(344 100% 50% / 0.25)")
+  assert_eq_str(c.color_type, "hsl")
+  assert_eq_with_error(0.25, c.alpha.unwrap(), error=eps)
+  assert_eq_with_error(0.25, c.hsl.alpha.unwrap(), error=eps)
+}
+
+///|
+test "parse_color_string: hsl space-only no alpha" {
+  let eps_h : Double = 0.5
+  let eps_sl : Double = 0.01
+  let eps : Double = 0.02
+  let c = parse_color_string("hsl(49.73 100% 71.37%)")
+  assert_eq_str(c.color_type, "hsl")
+  assert_true(c.alpha is None)
+  assert_eq_with_error(49.73, c.hsl.h, error=eps_h)
+  assert_eq_with_error(1.0, c.hsl.s, error=eps_sl)
+  assert_eq_with_error(0.7137, c.hsl.l, error=eps_sl)
+  assert_eq_with_error(255.0, c.rgb.r, error=eps)
+  assert_eq_with_error(230.0, c.rgb.g, error=eps)
+  assert_eq_with_error(109.0, c.rgb.b, error=eps)
+}
+
+///|
+test "parse_color_string: oklab with percent alpha" {
+  let eps : Double = 0.00001
+  let c = parse_color_string("oklab(70.622% 0.1374 0.14283 / 50%)")
+  assert_eq_str(c.color_type, "oklab")
+  assert_eq_with_error(0.5, c.alpha.unwrap(), error=eps)
+  assert_eq_with_error(0.5, c.oklab.alpha.unwrap(), error=eps)
+}
+
+///|
+test "parse_color_string: oklch no alpha" {
+  let eps : Double = 0.005
+  let eps_h : Double = 0.5
+  let eps_sl : Double = 0.01
+  let c = parse_color_string("oklch(70.622% 0.19819 46.11008)")
+  assert_eq_str(c.color_type, "oklch")
+  assert_true(c.alpha is None)
+  assert_eq_with_error(0.70622, c.oklch.l, error=eps)
+  assert_eq_with_error(0.19819, c.oklch.c, error=eps)
+  assert_eq_with_error(46.11008, c.oklch.h, error=eps)
+  assert_eq_with_error(255.0, c.rgb.r, error=0.02)
+  assert_eq_with_error(110.0, c.rgb.g, error=0.02)
+  assert_eq_with_error(0.0, c.rgb.b, error=0.02)
+  assert_eq_with_error(25.88, c.hsl.h, error=eps_h)
+  assert_eq_with_error(1.0, c.hsl.s, error=eps_sl)
+  assert_eq_with_error(0.5, c.hsl.l, error=eps_sl)
+}
