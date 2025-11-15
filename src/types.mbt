@@ -31,10 +31,10 @@ pub struct LCH {
 
 ///|
 pub struct RGB {
-  alpha : UInt?
-  r : UInt
-  g : UInt
-  b : UInt
+  alpha : Double?
+  r : Double
+  g : Double
+  b : Double
 } derive(Show, Default, Eq, Compare, Hash)
 
 ///|

@@ -101,9 +101,9 @@ fn linear_to_rgb(input : Double) -> Double {
 /// - input format: "#RRGGBB" (case-insensitive)
 /// - on failure: raises a parse error
 pub fn hex_to_rgb(input : StringView) -> RGB raise {
-  let r = @strconv.parse_uint(input[1:3], base=16)
-  let g = @strconv.parse_uint(input[3:5], base=16)
-  let b = @strconv.parse_uint(input[5:], base=16)
+  let r = @strconv.parse_uint(input[1:3], base=16).to_double()
+  let g = @strconv.parse_uint(input[3:5], base=16).to_double()
+  let b = @strconv.parse_uint(input[5:], base=16).to_double()
   RGB::{ r, g, b, alpha: None }
 }
 
@@ -112,9 +112,9 @@ pub fn hex_to_rgb(input : StringView) -> RGB raise {
 /// - input: r,g,b in [0,255]
 /// - output: h in [0,360), s,l in [0,1]
 pub fn rgb_to_hsl(rgb : RGB) -> HSL {
-  let r = rgb.r.to_double() / 255
-  let g = rgb.g.to_double() / 255
-  let b = rgb.b.to_double() / 255
+  let r = rgb.r / 255
+  let g = rgb.g / 255
+  let b = rgb.b / 255
   let x_max = @cmp.maximum(r, @cmp.maximum(g, b))
   let v = x_max
   let x_min = @cmp.minimum(r, @cmp.minimum(g, b))
@@ -143,7 +143,7 @@ pub fn rgb_to_hsl(rgb : RGB) -> HSL {
 /// Convert RGB to a hex string (alpha ignored).
 /// - returns: "rrggbb" (no leading #)
 pub fn rgb_to_hex(rgb : RGB) -> HEX {
-  "\{rgb.r.to_string(radix=16)}\{rgb.g.to_string(radix=16)}\{rgb.b.to_string(radix=16)}"
+  "\{rgb.r.to_uint().to_string(radix=16)}\{rgb.g.to_uint().to_string(radix=16)}\{rgb.b.to_uint().to_string(radix=16)}"
 }
 
 ///|
@@ -206,7 +206,8 @@ pub fn hsl_to_rgb(hsl : HSL) -> RGB {
     v + m
   }
 
-  RGB::from_double(aux(r), aux(g), aux(b))
+  // Scale normalized channels [0,1] to 8-bit RGB domain [0,255]
+  RGB::from_double(aux(r) * 255, aux(g) * 255, aux(b) * 255)
 }
 
 ///|
@@ -282,9 +283,9 @@ pub fn oklab_to_rgb(lab : LAB, precision? : Int = PRECISION) -> RGB {
     ) *
     255
   RGB::{
-    r: clamp(round(r, precision~), min=0, max=255).to_uint(),
-    g: clamp(round(g, precision~), min=0, max=255).to_uint(),
-    b: clamp(round(b, precision~), min=0, max=255).to_uint(),
+    r: clamp(round(r, precision~), min=0, max=255),
+    g: clamp(round(g, precision~), min=0, max=255),
+    b: clamp(round(b, precision~), min=0, max=255),
     alpha: None,
   }
 }
