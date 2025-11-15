@@ -28,7 +28,7 @@ fn oklch_to_oklab(LCH, precision? : Int) -> LAB
 
 fn oklch_to_rgb(LCH, precision? : Int) -> RGB
 
-fn parse_color_string(String) -> Unit
+fn parse_color_string(String) -> Colors raise
 
 fn rgb_to_hex(RGB) -> String
 
