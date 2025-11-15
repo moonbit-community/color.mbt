@@ -1,4 +1,7 @@
 ///|
+/// Compute the positive modulo of x by y so the result is in [0, y).
+/// - params: x is any real number; y > 0
+/// - returns: positive modulo as Double
 fn mod(x : Double, y : Double) -> Double {
   if x < 0 {
     (x + y) % y
@@ -8,6 +11,8 @@ fn mod(x : Double, y : Double) -> Double {
 }
 
 ///|
+/// Return the sign of a real number.
+/// - x > 0 => 1.0; x < 0 => -1.0; x == 0 => 0.0
 fn sign(x : Double) -> Double {
   if x > 0.0 {
     1.0
@@ -19,6 +24,9 @@ fn sign(x : Double) -> Double {
 }
 
 ///|
+/// Clamp a value into the interval [min, max].
+/// - defaults: [0, 100]
+/// - returns: min if value < min; max if value > max; otherwise value
 fn clamp(value : Double, min? : Double = 0, max? : Double = 100) -> Double {
   let v = if value < min { min } else { value }
   if v > max {
@@ -29,6 +37,10 @@ fn clamp(value : Double, min? : Double = 0, max? : Double = 100) -> Double {
 }
 
 ///|
+/// Round a floating-point number to a given precision.
+/// - precision: number of fractional digits to keep (default 2)
+/// - force_precision: when true, round exactly to precision; when false, choose digits adaptively by magnitude
+/// - returns: rounded result
 fn round(
   input : Double,
   precision? : Int = 2,
@@ -59,6 +71,9 @@ fn round(
 }
 
 ///|
+/// Convert an 8-bit sRGB channel to linear RGB (inverse gamma).
+/// - param: c in [0, 255]
+/// - returns: linear-space Double, approximately in [-1, 1]
 fn rgb_to_linear(c : UInt) -> Double {
   let input = c.to_double() / 255.0
   let absval = Double::abs(input)
@@ -72,6 +87,9 @@ fn rgb_to_linear(c : UInt) -> Double {
 }
 
 ///|
+/// Convert a linear RGB channel value to sRGB (gamma encode).
+/// - param: input is a linear-space value
+/// - returns: sRGB-space Double (not scaled to 0–255)
 fn linear_to_rgb(input : Double) -> Double {
   let absolute_number = Double::abs(input)
   let sign_value = if input < 0.0 { -1.0 } else { 1.0 }
@@ -84,6 +102,9 @@ fn linear_to_rgb(input : Double) -> Double {
 }
 
 ///|
+/// Parse a hex color string to RGB.
+/// - input format: "#RRGGBB" (case-insensitive)
+/// - on failure: raises a parse error
 pub fn hex_to_rgb(input : StringView) -> RGB raise {
   let r = @strconv.parse_uint(input[1:3], base=16)
   let g = @strconv.parse_uint(input[3:5], base=16)
@@ -92,6 +113,9 @@ pub fn hex_to_rgb(input : StringView) -> RGB raise {
 }
 
 ///|
+/// Convert RGB to HSL (alpha ignored).
+/// - input: r,g,b in [0,255]
+/// - output: h in [0,360), s,l in [0,1]
 pub fn rgb_to_hsl(rgb : RGB) -> HSL {
   let r = rgb.r.to_double() / 255
   let g = rgb.g.to_double() / 255
@@ -121,12 +145,15 @@ pub fn rgb_to_hsl(rgb : RGB) -> HSL {
 }
 
 ///|
-/// no handling alpha
+/// Convert RGB to a hex string (alpha ignored).
+/// - returns: "rrggbb" (no leading #)
 pub fn rgb_to_hex(rgb : RGB) -> HEX {
   "\{rgb.r.to_string(radix=16)}\{rgb.g.to_string(radix=16)}\{rgb.b.to_string(radix=16)}"
 }
 
 ///|
+/// Convert RGB to Oklab and round components.
+/// - precision: number of fractional digits, default PRECISION
 pub fn rgb_to_oklab(rgb : RGB, precision? : Int = PRECISION) -> LAB {
   let lr = rgb_to_linear(rgb.r)
   let lg = rgb_to_linear(rgb.g)
@@ -152,11 +179,16 @@ pub fn rgb_to_oklab(rgb : RGB, precision? : Int = PRECISION) -> LAB {
 }
 
 ///|
+/// Convert RGB to Oklch.
+/// - Equivalent to rgb_to_oklab followed by oklab_to_oklch
 pub fn rgb_to_oklch(rgb : RGB, precision? : Int = PRECISION) -> LCH {
   return oklab_to_oklch(rgb_to_oklab(rgb, precision~), precision~)
 }
 
 ///|
+/// Convert HSL to RGB.
+/// - input: h in [0,360), s,l in [0,1]
+/// - output: r,g,b in [0,255]
 pub fn hsl_to_rgb(hsl : HSL) -> RGB {
   let h = hsl.h
   let s = hsl.s
@@ -175,6 +207,7 @@ pub fn hsl_to_rgb(hsl : HSL) -> RGB {
     _ => abort("unreachable")
   }
   fn aux(v : Double) -> Double {
+    /// Add the offset m to a normalized channel
     v + m
   }
 
@@ -182,21 +215,26 @@ pub fn hsl_to_rgb(hsl : HSL) -> RGB {
 }
 
 ///|
+/// Convert HSL to a hex color string.
 pub fn hsl_to_hex(hsl : HSL) -> HEX {
   rgb_to_hex(hsl_to_rgb(hsl))
 }
 
 ///|
+/// Convert HSL to Oklab.
 pub fn hsl_to_oklab(hsl : HSL, precision? : Int = PRECISION) -> LAB {
   rgb_to_oklab(hsl_to_rgb(hsl), precision~)
 }
 
 ///|
+/// Convert HSL to Oklch.
 pub fn hsl_to_oklch(hsl : HSL, precision? : Int = PRECISION) -> LCH {
   rgb_to_oklch(hsl_to_rgb(hsl), precision~)
 }
 
 ///|
+/// Convert Oklab to Oklch and round components.
+/// - Set h to 0 when c is near 0
 pub fn oklab_to_oklch(lab : LAB, precision? : Int = PRECISION) -> LCH {
   let l = lab.l
   let a = lab.a
@@ -215,16 +253,20 @@ pub fn oklab_to_oklch(lab : LAB, precision? : Int = PRECISION) -> LCH {
 }
 
 ///|
+/// Convert Oklab to a hex color string.
 pub fn oklab_to_hex(lab : LAB, precision? : Int = PRECISION) -> HEX {
   rgb_to_hex(oklab_to_rgb(lab, precision~))
 }
 
 ///|
+/// Convert Oklab to HSL.
 pub fn oklab_to_hsl(lab : LAB, precision? : Int = PRECISION) -> HSL {
   rgb_to_hsl(oklab_to_rgb(lab, precision~))
 }
 
 ///|
+/// Convert Oklab to RGB, then clamp and round the result.
+/// - precision: fractional digits to round before clamping
 pub fn oklab_to_rgb(lab : LAB, precision? : Int = PRECISION) -> RGB {
   let l = lab.l
   let a = lab.a
@@ -253,10 +295,9 @@ pub fn oklab_to_rgb(lab : LAB, precision? : Int = PRECISION) -> RGB {
 }
 
 ///|
-/// Convert from a qualitative parameter h and a quantitative parameter l to a 24-bit pixel.
-/// These formulas were invented by David Dalrymple to obtain maximum contrast without going
-/// out of gamut if the parameters are in the range 0-1.
-/// A saturation multiplier was added by Gregor Aisch
+/// Convert Oklch to Oklab and round components.
+/// - h is in degrees; if h < 0 it is clamped to 0
+/// - a/b are computed from c and h using trigonometry
 pub fn oklch_to_oklab(lch : LCH, precision? : Int = PRECISION) -> LAB {
   let l = lch.l
   let c = lch.c
@@ -273,16 +314,19 @@ pub fn oklch_to_oklab(lch : LCH, precision? : Int = PRECISION) -> LAB {
 }
 
 ///|
+/// Convert Oklch to RGB.
 pub fn oklch_to_rgb(lch : LCH, precision? : Int = PRECISION) -> RGB {
   oklab_to_rgb(oklch_to_oklab(lch, precision~), precision~)
 }
 
 ///|
+/// Convert Oklch to a hex color string.
 pub fn oklch_to_hex(lch : LCH, precision? : Int = PRECISION) -> HEX {
   rgb_to_hex(oklch_to_rgb(lch, precision~))
 }
 
 ///|
+/// Convert Oklch to HSL.
 pub fn oklch_to_hsl(lch : LCH, precision? : Int = PRECISION) -> HSL {
   rgb_to_hsl(oklch_to_rgb(lch, precision~))
 }
