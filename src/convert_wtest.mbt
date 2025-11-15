@@ -117,6 +117,23 @@ test "convert: green (rgb 0 255 68)" {
 }
 
 ///|
+test "RGB::from_rgba_u32 packs bytes as 0xRRGGBBAA" {
+  // 0x12_34_56_7f -> r=0x12, g=0x34, b=0x56, a=0x7f/255
+  let c = RGB::from_rgba_u32(0x12_34_56_7fU)
+  assert_eq_with_error(0x12U.to_double(), c.r, error=0.0)
+  assert_eq_with_error(0x34U.to_double(), c.g, error=0.0)
+  assert_eq_with_error(0x56U.to_double(), c.b, error=0.0)
+  assert_eq_with_error(0x7fU.to_double() / 255.0, c.alpha.unwrap(), error=0.000001)
+
+  // Fully transparent white: 0xFF_FF_FF_00
+  let w0 = RGB::from_rgba_u32(0xFF_FF_FF_00U)
+  assert_eq_with_error(255.0, w0.r, error=0.0)
+  assert_eq_with_error(255.0, w0.g, error=0.0)
+  assert_eq_with_error(255.0, w0.b, error=0.0)
+  assert_eq_with_error(0.0, w0.alpha.unwrap(), error=0.0)
+}
+
+///|
 test "convert: orange via OKLab -> RGB/HSL" {
   let eps_h : Double = 0.5
   let eps_sl : Double = 0.01

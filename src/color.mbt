@@ -13,6 +13,18 @@ pub fn RGB::from_hex(input : HEX) -> RGB raise {
 }
 
 ///|
+/// Construct an RGB from a 32-bit packed RGBA integer 0xRRGGBBAA.
+/// - Each byte is 8-bit sRGB; alpha byte AA will be normalized to [0,1].
+/// - Example: 0xFF_FF_FF_00 => r=255, g=255, b=255, alpha=0.0 (fully transparent white)
+pub fn RGB::from_rgba_u32(rgba : UInt) -> RGB {
+  let r = ((rgba >> 24) & 0xFFU).to_double()
+  let g = ((rgba >> 16) & 0xFFU).to_double()
+  let b = ((rgba >> 8) & 0xFFU).to_double()
+  let a = (rgba & 0xFFU).to_double() / 255.0
+  RGB::{ r, g, b, alpha: Some(a) }
+}
+
+///|
 /// Format helpers for color string outputs.
 fn percent_string(value : Double, precision? : Int = PRECISION) -> String {
   // Round then rely on Double::to_string to trim unnecessary trailing zeros
