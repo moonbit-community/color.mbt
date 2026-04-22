@@ -1,0 +1,49 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "illusory0x0/color"
+
+// Values
+pub fn hsl_to_rgb(Double, Double, Double) -> (Double, Double, Double)
+
+pub fn rgb_to_hsl(Double, Double, Double) -> (Double, Double, Double)
+
+// Errors
+
+// Types and methods
+type Color derive(Compare, Default, Eq, Hash)
+pub fn Color::alpha(Self) -> Byte
+pub fn Color::blue(Self) -> Byte
+pub fn Color::green(Self) -> Byte
+pub fn Color::hsl(UInt, UInt, UInt) -> Self
+pub fn Color::hsla(UInt, UInt, UInt, UInt) -> Self
+pub fn Color::new(UInt) -> Self
+pub fn Color::red(Self) -> Byte
+pub fn Color::rgb(Byte, Byte, Byte) -> Self
+pub fn Color::rgba(Byte, Byte, Byte, Byte) -> Self
+pub fn Color::to_hsl(Self) -> HSL
+pub impl Show for Color
+
+pub struct HSL {
+  hue : UInt
+  saturation : UInt
+  lightness : UInt
+} derive(Compare, Default, Eq, Hash)
+pub fn HSL::new(UInt, UInt, UInt) -> Self
+pub fn HSL::to_color(Self) -> Color
+pub fn HSL::to_hsla(Self) -> HSLA
+pub impl Show for HSL
+
+pub struct HSLA {
+  hue : UInt
+  saturation : UInt
+  lightness : UInt
+  alpha : UInt
+} derive(Compare, Default, Eq, Hash)
+pub fn HSLA::new(UInt, UInt, UInt, UInt) -> Self
+pub fn HSLA::to_color(Self) -> Color
+pub fn HSLA::to_hsl(Self) -> HSL
+pub impl Show for HSLA
+
+// Type aliases
+
+// Traits
+
