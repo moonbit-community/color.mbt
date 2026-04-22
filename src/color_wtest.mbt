@@ -88,8 +88,8 @@ test "hsl/rgb convert error=10" {
   }
 
   for h in 0U..<360 {
-    for s in 0U..=100 {
-      for l in 0U..=100 {
+    for s in 0U..<=100 {
+      for l in 0U..<=100 {
         let actual = Color::hsl(h, s, l).to_hsl().to_color()
         let expected = HSL::new(h, s, l).to_color()
         let error : Double = 10

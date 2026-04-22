@@ -1,7 +1,9 @@
-///| RGBA color
+///|
+/// RGBA color
 struct Color(UInt) derive(Default, Eq, Compare, Hash)
 
-///| HSL color
+///|
+/// HSL color
 pub struct HSL {
   hue : UInt
   saturation : UInt
@@ -19,7 +21,8 @@ pub impl Show for HSL with output(self, logger) {
   logger.write_string("}")
 }
 
-///| HSLA color
+///|
+/// HSLA color
 pub struct HSLA {
   hue : UInt
   saturation : UInt

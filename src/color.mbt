@@ -57,7 +57,7 @@ fn validate_hsla(
   guard hue < 360 && saturation <= 100 && lightness <= 100 && alpha <= 100
 }
 
-///| 
+///|
 /// * `hue` in \[0,360)
 /// 
 /// * `saturation` in \[0,100\]
