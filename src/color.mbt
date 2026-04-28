@@ -1,21 +1,21 @@
 ///|
 pub fn Color::red(self : Color) -> Byte {
-  ((self.inner() >> 24) & 0xFFU).to_byte()
+  ((self.0 >> 24) & 0xFFU).to_byte()
 }
 
 ///|
 pub fn Color::green(self : Color) -> Byte {
-  ((self.inner() >> 16) & 0xFFU).to_byte()
+  ((self.0 >> 16) & 0xFFU).to_byte()
 }
 
 ///|
 pub fn Color::blue(self : Color) -> Byte {
-  ((self.inner() >> 8) & 0xFFU).to_byte()
+  ((self.0 >> 8) & 0xFFU).to_byte()
 }
 
 ///|
 pub fn Color::alpha(self : Color) -> Byte {
-  (self.inner() & 0xFFU).to_byte()
+  (self.0 & 0xFFU).to_byte()
 }
 
 ///|
