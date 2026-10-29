@@ -1,6 +1,10 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "illusory0x0/color"
 
+import {
+  "moonbitlang/core/debug",
+}
+
 // Values
 pub fn hsl_to_rgb(Double, Double, Double) -> (Double, Double, Double)
 
@@ -9,41 +13,79 @@ pub fn rgb_to_hsl(Double, Double, Double) -> (Double, Double, Double)
 // Errors
 
 // Types and methods
-type Color derive(Compare, Default, Eq, Hash)
+type Color derive(Compare, Default, Eq, Hash, @debug.Debug)
 pub fn Color::alpha(Self) -> Byte
 pub fn Color::blue(Self) -> Byte
+pub fn Color::compare(Self, Self) -> Int32
+pub fn Color::default() -> Self
+pub fn Color::equal(Self, Self) -> Bool
 pub fn Color::green(Self) -> Byte
-pub fn Color::hsl(UInt, UInt, UInt) -> Self
-pub fn Color::hsla(UInt, UInt, UInt, UInt) -> Self
-pub fn Color::new(UInt) -> Self
+pub fn Color::hash(Self) -> Int32
+pub fn Color::hash_combine(Self, Hasher) -> Unit
+pub fn Color::hsl(UInt32, UInt32, UInt32) -> Self
+pub fn Color::hsla(UInt32, UInt32, UInt32, UInt32) -> Self
+pub fn Color::new(UInt32) -> Self
+pub fn Color::not_equal(Self, Self) -> Bool
+pub fn Color::op_ge(Self, Self) -> Bool
+pub fn Color::op_gt(Self, Self) -> Bool
+pub fn Color::op_le(Self, Self) -> Bool
+pub fn Color::op_lt(Self, Self) -> Bool
+pub fn Color::output(Self, &Logger) -> Unit
 pub fn Color::red(Self) -> Byte
 pub fn Color::rgb(Byte, Byte, Byte) -> Self
 pub fn Color::rgba(Byte, Byte, Byte, Byte) -> Self
 pub fn Color::to_hsl(Self) -> HSL
+pub fn Color::to_repr(Self) -> @debug.Repr
+pub fn Color::to_string(Self) -> String
 pub impl Show for Color
 
 pub struct HSL {
-  hue : UInt
-  saturation : UInt
-  lightness : UInt
-} derive(Compare, Default, Eq, Hash)
-pub fn HSL::new(UInt, UInt, UInt) -> Self
+  hue : UInt32
+  saturation : UInt32
+  lightness : UInt32
+} derive(Compare, Default, Eq, Hash, @debug.Debug)
+pub fn HSL::compare(Self, Self) -> Int32
+pub fn HSL::default() -> Self
+pub fn HSL::equal(Self, Self) -> Bool
+pub fn HSL::hash(Self) -> Int32
+pub fn HSL::hash_combine(Self, Hasher) -> Unit
+pub fn HSL::new(UInt32, UInt32, UInt32) -> Self
+pub fn HSL::not_equal(Self, Self) -> Bool
+pub fn HSL::op_ge(Self, Self) -> Bool
+pub fn HSL::op_gt(Self, Self) -> Bool
+pub fn HSL::op_le(Self, Self) -> Bool
+pub fn HSL::op_lt(Self, Self) -> Bool
+pub fn HSL::output(Self, &Logger) -> Unit
 pub fn HSL::to_color(Self) -> Color
 pub fn HSL::to_hsla(Self) -> HSLA
+pub fn HSL::to_repr(Self) -> @debug.Repr
+pub fn HSL::to_string(Self) -> String
 pub impl Show for HSL
 
 pub struct HSLA {
-  hue : UInt
-  saturation : UInt
-  lightness : UInt
-  alpha : UInt
-} derive(Compare, Default, Eq, Hash)
-pub fn HSLA::new(UInt, UInt, UInt, UInt) -> Self
+  hue : UInt32
+  saturation : UInt32
+  lightness : UInt32
+  alpha : UInt32
+} derive(Compare, Default, Eq, Hash, @debug.Debug)
+pub fn HSLA::compare(Self, Self) -> Int32
+pub fn HSLA::default() -> Self
+pub fn HSLA::equal(Self, Self) -> Bool
+pub fn HSLA::hash(Self) -> Int32
+pub fn HSLA::hash_combine(Self, Hasher) -> Unit
+pub fn HSLA::new(UInt32, UInt32, UInt32, UInt32) -> Self
+pub fn HSLA::not_equal(Self, Self) -> Bool
+pub fn HSLA::op_ge(Self, Self) -> Bool
+pub fn HSLA::op_gt(Self, Self) -> Bool
+pub fn HSLA::op_le(Self, Self) -> Bool
+pub fn HSLA::op_lt(Self, Self) -> Bool
+pub fn HSLA::output(Self, &Logger) -> Unit
 pub fn HSLA::to_color(Self) -> Color
 pub fn HSLA::to_hsl(Self) -> HSL
+pub fn HSLA::to_repr(Self) -> @debug.Repr
+pub fn HSLA::to_string(Self) -> String
 pub impl Show for HSLA
 
 // Type aliases
 
 // Traits
-

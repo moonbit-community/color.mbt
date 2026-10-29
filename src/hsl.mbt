@@ -4,9 +4,9 @@ pub fn HSL::to_color(self : HSL) -> Color {
 }
 
 ///|
-pub fn HSL::new(hue : UInt, saturation : UInt, lightness : UInt) -> HSL {
+pub fn HSL::new(hue : UInt32, saturation : UInt32, lightness : UInt32) -> HSL {
   validate_hsla(hue, saturation, lightness, 100)
-  { hue, saturation, lightness }
+  { hue, saturation, lightness, }
 }
 
 ///|

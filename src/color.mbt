@@ -49,12 +49,14 @@ test "rgba" {
 
 ///|
 fn validate_hsla(
-  hue : UInt,
-  saturation : UInt,
-  lightness : UInt,
-  alpha : UInt,
+  hue : UInt32,
+  saturation : UInt32,
+  lightness : UInt32,
+  alpha : UInt32,
 ) -> Unit {
-  guard hue < 360 && saturation <= 100 && lightness <= 100 && alpha <= 100
+  guard hue < 360 && saturation <= 100 && lightness <= 100 && alpha <= 100 else {
+    abort("Invalid HSLA color components")
+  }
 }
 
 ///|
@@ -68,10 +70,10 @@ fn validate_hsla(
 /// 
 /// [wiki](https://en.wikipedia.org/wiki/HSL_and_HSV)
 pub fn Color::hsla(
-  hue : UInt,
-  saturation : UInt,
-  lightness : UInt,
-  alpha : UInt,
+  hue : UInt32,
+  saturation : UInt32,
+  lightness : UInt32,
+  alpha : UInt32,
 ) -> Color {
   validate_hsla(hue, saturation, lightness, alpha)
   let h = hue.to_double()
@@ -97,17 +99,21 @@ pub fn Color::rgb(red : Byte, green : Byte, blue : Byte) -> Color {
 }
 
 ///|
-pub fn Color::hsl(hue : UInt, saturation : UInt, lightness : UInt) -> Color {
+pub fn Color::hsl(
+  hue : UInt32,
+  saturation : UInt32,
+  lightness : UInt32,
+) -> Color {
   Color::hsla(hue, saturation, lightness, 100)
 }
 
 ///|
-pub impl Show for Color with output(self, logger) {
+pub impl Show for Color with fn output(self, logger) {
   fn to_xdigit(x : Byte) {
     if x < 10 {
-      (x.to_int() + '0'.to_int()) |> Int::unsafe_to_char
+      (x.to_int() + '0'.to_int()) |> Int32::unsafe_to_char
     } else {
-      (x.to_int() - 10 + 'A'.to_int()) |> Int::unsafe_to_char
+      (x.to_int() - 10 + 'A'.to_int()) |> Int32::unsafe_to_char
     }
   }
 
@@ -128,7 +134,7 @@ pub impl Show for Color with output(self, logger) {
 }
 
 ///|
-pub fn Color::new(x : UInt) -> Color = "%identity"
+pub fn Color::new(x : UInt32) -> Color = "%identity"
 
 ///|
 pub fn Color::to_hsl(self : Color) -> HSL {
@@ -139,5 +145,5 @@ pub fn Color::to_hsl(self : Color) -> HSL {
   let hue = h.to_uint()
   let lightness = (l * 100).to_uint()
   let saturation = (s * 100).to_uint()
-  { hue, saturation, lightness }
+  { hue, saturation, lightness, }
 }

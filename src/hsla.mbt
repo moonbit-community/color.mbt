@@ -5,16 +5,16 @@ pub fn HSLA::to_color(self : HSLA) -> Color {
 
 ///|
 pub fn HSLA::new(
-  hue : UInt,
-  saturation : UInt,
-  lightness : UInt,
-  alpha : UInt,
+  hue : UInt32,
+  saturation : UInt32,
+  lightness : UInt32,
+  alpha : UInt32,
 ) -> HSLA {
   validate_hsla(hue, saturation, lightness, alpha)
-  { hue, saturation, lightness, alpha }
+  { hue, saturation, lightness, alpha, }
 }
 
 ///|
 pub fn HSLA::to_hsl(self : HSLA) -> HSL {
-  { hue: self.hue, saturation: self.saturation, lightness: self.lightness }
+  { hue: self.hue, saturation: self.saturation, lightness: self.lightness, }
 }
