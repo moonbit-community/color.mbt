@@ -1,17 +1,17 @@
 ///|
 /// RGBA color
-struct Color(UInt) derive(Default, Eq, Compare, Hash)
+struct Color(UInt32) derive(Default, Eq, Compare, Hash, Debug)
 
 ///|
 /// HSL color
 pub struct HSL {
-  hue : UInt
-  saturation : UInt
-  lightness : UInt
-} derive(Default, Eq, Compare, Hash)
+  hue : UInt32
+  saturation : UInt32
+  lightness : UInt32
+} derive(Default, Eq, Compare, Hash, Debug)
 
 ///|
-pub impl Show for HSL with output(self, logger) {
+pub impl Show for HSL with fn output(self, logger) {
   logger.write_string("{hue: ")
   logger.write_object(self.hue)
   logger.write_string(", saturation: ")
@@ -24,14 +24,14 @@ pub impl Show for HSL with output(self, logger) {
 ///|
 /// HSLA color
 pub struct HSLA {
-  hue : UInt
-  saturation : UInt
-  lightness : UInt
-  alpha : UInt
-} derive(Default, Eq, Compare, Hash)
+  hue : UInt32
+  saturation : UInt32
+  lightness : UInt32
+  alpha : UInt32
+} derive(Default, Eq, Compare, Hash, Debug)
 
 ///|
-pub impl Show for HSLA with output(self, logger) {
+pub impl Show for HSLA with fn output(self, logger) {
   logger.write_string("{hue: ")
   logger.write_object(self.hue)
   logger.write_string(", saturation: ")
